@@ -47,7 +47,11 @@ function App() {
   function toggleTodo(id) {
     const updatedTodos = todos.map((todo) => {
       if (id === todo.id) {
-        return { ...todo, complete: !todo.complete, dateCompleted: Date.now() };
+        let dateCompleted = null;
+        if (!todo.complete) {
+          dateCompleted = Date.now();
+        }
+        return { ...todo, complete: !todo.complete, dateCompleted };
       }
       return todo;
     });
