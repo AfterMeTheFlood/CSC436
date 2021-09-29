@@ -15,8 +15,6 @@ export default function Todo({
       <div>
         <input
           type="checkbox"
-          // id="complete"
-          // name="complete"
           checked={complete || false}
           onChange={() => toggleTodo(id)}
         />
