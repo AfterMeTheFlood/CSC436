@@ -7,7 +7,7 @@ export default function Todo({
   dateCreated,
   complete,
   dateCompleted,
-  toggleTodo,
+  dispatchTodo,
 }) {
   return (
     <div>
@@ -16,7 +16,7 @@ export default function Todo({
         <input
           type="checkbox"
           checked={complete || false}
-          onChange={() => toggleTodo(id)}
+          onChange={() => dispatchTodo({ type: "TOGGLE_TODO", id })}
         />
         <label htmlFor="complete">complete</label>
       </div>
@@ -25,6 +25,12 @@ export default function Todo({
       </i>
       <div>dateCreated: {dateCreated}</div>
       <div>dateCompleted: {dateCompleted}</div>
+      <button
+        type="button"
+        onClick={() => dispatchTodo({ type: "DELETE_TODO", id })}
+      >
+        Delete
+      </button>
       <br />
     </div>
   );

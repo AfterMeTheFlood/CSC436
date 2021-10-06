@@ -1,7 +1,7 @@
 import React from "react";
 import Todo from "./Todo";
 
-export default function TodoList({ todos = [], toggleTodo }) {
+export default function TodoList({ todos = [], dispatchTodo }) {
   return (
     <div>
       {todos.map((p, i) => (
@@ -10,7 +10,7 @@ export default function TodoList({ todos = [], toggleTodo }) {
           title={p.title}
           author={p.author}
           key={"post-" + i}
-          toggleTodo={toggleTodo}
+          dispatchTodo={dispatchTodo}
         />
       ))}
     </div>

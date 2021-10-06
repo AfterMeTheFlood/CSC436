@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useReducer, useEffect } from "react";
 import UserBar from "./user/UserBar";
 import CreateTodo from "./CreateTodo";
 import TodoList from "./TodoList";
+import appReducer from "./reducers";
 
 function App() {
   const initialTodos = [
@@ -31,42 +32,29 @@ function App() {
     },
   ];
 
-  const [todos, setTodoList] = useState(initialTodos);
+  const [state, dispatch] = useReducer(appReducer, {
+    user: "",
+    todos: initialTodos,
+  });
+  const { user, todos } = state;
 
-  function createTodo(title, description) {
-    const newTodo = {
-      id: todos.length + 1,
-      title,
-      description,
-      complete: false,
-      dateCreated: Date.now(),
-    };
-    setTodoList([...todos, newTodo]);
-  }
-
-  function toggleTodo(id) {
-    const updatedTodos = todos.map((todo) => {
-      if (id === todo.id) {
-        let dateCompleted = null;
-        if (!todo.complete) {
-          dateCompleted = Date.now();
-        }
-        return { ...todo, complete: !todo.complete, dateCompleted };
-      }
-      return todo;
-    });
-    setTodoList(updatedTodos);
-  }
+  useEffect(() => {
+    if (user) {
+      document.title = `${user}'s Todo`;
+    } else {
+      document.title = "Todo";
+    }
+  }, [user]);
 
   return (
     <div>
-      <UserBar />
+      <UserBar user={user} dispatchUser={dispatch} />
       <br />
       <br />
       <hr />
       <br />
-      <CreateTodo createTodo={createTodo} />
-      <TodoList todos={todos} toggleTodo={toggleTodo} />
+      {user && <CreateTodo dispatchTodo={dispatch} />}
+      <TodoList todos={todos} dispatchTodo={dispatch} />
     </div>
   );
 }

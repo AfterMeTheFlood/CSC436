@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Register(props) {
+export default function Register({ dispatchUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
@@ -14,7 +14,7 @@ export default function Register(props) {
       alert("Password can not be empty!");
       return;
     }
-    props.register(username, password, passwordRepeat);
+    dispatchUser({ type: "REGISTER", username, password, passwordRepeat });
     setUsername("");
     setPassword("");
     setPasswordRepeat("");

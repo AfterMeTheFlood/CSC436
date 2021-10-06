@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Login(props) {
+export default function Login({ dispatchUser }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   function handleSubmit(e) {
@@ -13,7 +13,7 @@ export default function Login(props) {
       alert("Password can not be empty!");
       return;
     }
-    props.login(username, password);
+    dispatchUser({ type: "LOGIN", username, password });
     setUsername("");
     setPassword("");
   }

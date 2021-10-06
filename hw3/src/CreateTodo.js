@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function CreateTodo(props) {
+export default function CreateTodo({ dispatchTodo }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   function handleSubmit(e) {
@@ -11,7 +11,11 @@ export default function CreateTodo(props) {
     }
     console.log("title:", title);
     console.log("description:", description);
-    props.createTodo(title, description);
+    dispatchTodo({
+      type: "CREATE_TODO",
+      title,
+      description,
+    });
     setTitle("");
     setDescription("");
   }
