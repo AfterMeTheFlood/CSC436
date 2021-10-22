@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StateContext } from "./Contexts";
 
-export default function CreateTodo({ dispatchTodo }) {
+export default function CreateTodo() {
+  const { dispatch } = useContext(StateContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   function handleSubmit(e) {
@@ -11,7 +13,7 @@ export default function CreateTodo({ dispatchTodo }) {
     }
     console.log("title:", title);
     console.log("description:", description);
-    dispatchTodo({
+    dispatch({
       type: "CREATE_TODO",
       title,
       description,

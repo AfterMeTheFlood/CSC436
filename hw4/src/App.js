@@ -3,6 +3,7 @@ import UserBar from "./user/UserBar";
 import CreateTodo from "./CreateTodo";
 import TodoList from "./TodoList";
 import appReducer from "./reducers";
+import { StateContext } from "./Contexts";
 
 function App() {
   const initialTodos = [
@@ -36,7 +37,7 @@ function App() {
     user: "",
     todos: initialTodos,
   });
-  const { user, todos } = state;
+  const { user } = state;
 
   useEffect(() => {
     if (user) {
@@ -48,13 +49,15 @@ function App() {
 
   return (
     <div>
-      <UserBar user={user} dispatchUser={dispatch} />
-      <br />
-      <br />
-      <hr />
-      <br />
-      {user && <CreateTodo dispatchTodo={dispatch} />}
-      <TodoList todos={todos} dispatchTodo={dispatch} />
+      <StateContext.Provider value={{ state: state, dispatch: dispatch }}>
+        <UserBar />
+        <br />
+        <br />
+        <hr />
+        <br />
+        {user && <CreateTodo />}
+        <TodoList />
+      </StateContext.Provider>
     </div>
   );
 }

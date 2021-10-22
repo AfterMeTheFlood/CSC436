@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StateContext } from "../Contexts";
 
-export default function Login({ dispatchUser }) {
+export default function Login() {
+  const { dispatch } = useContext(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   function handleSubmit(e) {
@@ -13,7 +15,7 @@ export default function Login({ dispatchUser }) {
       alert("Password can not be empty!");
       return;
     }
-    dispatchUser({ type: "LOGIN", username, password });
+    dispatch({ type: "LOGIN", username, password });
     setUsername("");
     setPassword("");
   }

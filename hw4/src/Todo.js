@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { StateContext } from "./Contexts";
 
 export default function Todo({
   id,
@@ -7,8 +8,8 @@ export default function Todo({
   dateCreated,
   complete,
   dateCompleted,
-  dispatchTodo,
 }) {
+  const { dispatch } = useContext(StateContext);
   return (
     <div>
       <h3>{title}</h3>
@@ -16,7 +17,7 @@ export default function Todo({
         <input
           type="checkbox"
           checked={complete || false}
-          onChange={() => dispatchTodo({ type: "TOGGLE_TODO", id })}
+          onChange={() => dispatch({ type: "TOGGLE_TODO", id })}
         />
         <label htmlFor="complete">complete</label>
       </div>
@@ -27,7 +28,7 @@ export default function Todo({
       <div>dateCompleted: {dateCompleted}</div>
       <button
         type="button"
-        onClick={() => dispatchTodo({ type: "DELETE_TODO", id })}
+        onClick={() => dispatch({ type: "DELETE_TODO", id })}
       >
         Delete
       </button>

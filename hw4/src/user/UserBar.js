@@ -1,17 +1,18 @@
-import React from "react";
-
+import React, { useContext } from "react";
 import Logout from "./Logout";
 import Register from "./Register";
 import Login from "./Login";
+import { StateContext } from "../Contexts";
 
-export default function UserBar({ user, dispatchUser }) {
-  if (user) {
-    return <Logout user={user} dispatchUser={dispatchUser} />;
+export default function UserBar() {
+  const { state } = useContext(StateContext);
+  if (state.user) {
+    return <Logout />;
   } else {
     return (
       <>
-        <Login dispatchUser={dispatchUser} />
-        <Register dispatchUser={dispatchUser} />
+        <Login />
+        <Register />
       </>
     );
   }

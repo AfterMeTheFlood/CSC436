@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StateContext } from "../Contexts";
 
-export default function Register({ dispatchUser }) {
+export default function Register() {
+  const { dispatch } = useContext(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
@@ -14,7 +16,7 @@ export default function Register({ dispatchUser }) {
       alert("Password can not be empty!");
       return;
     }
-    dispatchUser({ type: "REGISTER", username, password, passwordRepeat });
+    dispatch({ type: "REGISTER", username, password, passwordRepeat });
     setUsername("");
     setPassword("");
     setPasswordRepeat("");
