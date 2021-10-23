@@ -1,10 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useResource } from "react-request-hook";
 import { StateContext } from "../Contexts";
 
 export default function Login() {
   const { dispatch } = useContext(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [user, login] = useResource((username, password) => ({
+    url: `/login/${encodeURI(username)}/${encodeURI(password)}`,
+    method: "get",
+  }));
+  useEffect(() => {
+    if (user && user.data) {
+      if (user.data.length > 0) {
+        setLoginFailed(false);
+        dispatch({ type: "LOGIN", username: user.data[0].username });
+      } else {
+        setLoginFailed(true);
+      }
+    }
+  }, [user]);
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!username.trim()) {
@@ -15,9 +32,7 @@ export default function Login() {
       alert("Password can not be empty!");
       return;
     }
-    dispatch({ type: "LOGIN", username, password });
-    setUsername("");
-    setPassword("");
+    login(username, password);
   }
 
   function handleChangeUsername(e) {
@@ -45,6 +60,9 @@ export default function Login() {
         onChange={handleChangePassword}
       />
       <input type="submit" value="Login" />
+      {loginFailed && (
+        <span style={{ color: "red" }}>Invalid username or password</span>
+      )}
     </form>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from "react";
+import { useResource } from "react-request-hook";
 import UserBar from "./user/UserBar";
 import CreateTodo from "./CreateTodo";
 import TodoList from "./TodoList";
@@ -6,37 +7,24 @@ import appReducer from "./reducers";
 import { StateContext } from "./Contexts";
 
 function App() {
-  const initialTodos = [
-    {
-      id: 1,
-      title: "Todo 1",
-      description: "Todo 1 description",
-      dateCreated: Date.now(),
-      complete: true,
-      dateCompleted: Date.now(),
-    },
-    {
-      id: 2,
-      title: "Todo 2",
-      description: "Todo 2 description",
-      dateCreated: Date.now(),
-      complete: false,
-      dateCompleted: null,
-    },
-    {
-      id: 3,
-      title: "Todo 3",
-      description: "Todo 3 description",
-      dateCreated: Date.now(),
-      complete: false,
-      dateCompleted: null,
-    },
-  ];
+  const [todos, getTodos] = useResource(() => ({
+    url: "/todos",
+    method: "get",
+  }));
 
   const [state, dispatch] = useReducer(appReducer, {
     user: "",
-    todos: initialTodos,
+    todos: [],
   });
+
+  useEffect(getTodos, []);
+  
+  useEffect(() => {
+    if (todos && todos.data) {
+      dispatch({ type: "FETCH_TODOS", todos: todos.data });
+    }
+  }, [todos]);
+
   const { user } = state;
 
   useEffect(() => {

@@ -1,15 +1,48 @@
 import React, { useContext } from "react";
+import { useResource } from "react-request-hook";
 import { StateContext } from "./Contexts";
 
 export default function Todo({
   id,
   title,
-  description,
-  dateCreated,
+  content,
+  author,
+  createdOn,
   complete,
-  dateCompleted,
+  completedOn,
 }) {
   const { dispatch } = useContext(StateContext);
+
+  const [todoUpdate, updateTodo] = useResource(
+    ({ id, complete, completedOn }) => ({
+      url: `/todos/${id}`,
+      method: "put",
+      data: { title, content, author, createdOn, complete, completedOn },
+    })
+  );
+
+  function handleUpdate() {
+    const completedOn = new Date();
+    updateTodo({
+      id,
+      complete: !complete,
+      completedOn: complete ? null : completedOn,
+    });
+    dispatch({ type: "TOGGLE_TODO", id, complete: !complete, completedOn });
+  }
+
+  const [todoDelete, deleteTodo] = useResource(({ id }) => ({
+    url: `/todos/${id}`,
+    method: "delete",
+  }));
+
+  function handleDelete() {
+    deleteTodo({
+      id,
+    });
+    dispatch({ type: "DELETE_TODO", id });
+  }
+
   return (
     <div>
       <h3>{title}</h3>
@@ -17,19 +50,22 @@ export default function Todo({
         <input
           type="checkbox"
           checked={complete || false}
-          onChange={() => dispatch({ type: "TOGGLE_TODO", id })}
+          onChange={handleUpdate}
         />
         <label htmlFor="complete">complete</label>
       </div>
       <i>
-        Description: <b>{description}</b>
+        Content: <b>{content}</b>
       </i>
-      <div>dateCreated: {dateCreated}</div>
-      <div>dateCompleted: {dateCompleted}</div>
-      <button
-        type="button"
-        onClick={() => dispatch({ type: "DELETE_TODO", id })}
-      >
+      <div>
+        Date Created:
+        {createdOn ? new Date(createdOn).toLocaleDateString("en-us") : ""}
+      </div>
+      <div>
+        Date Completed:
+        {completedOn ? new Date(completedOn).toLocaleDateString("en-us") : ""}
+      </div>
+      <button type="button" onClick={handleDelete}>
         Delete
       </button>
       <br />

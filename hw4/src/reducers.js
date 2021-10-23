@@ -13,14 +13,17 @@ function userReducer(state, action) {
 function todosReducer(state, action) {
   const todos = state;
   switch (action.type) {
+    case "FETCH_TODOS":
+      return action.todos;
     case "CREATE_TODO":
       const curLength = todos.length ? todos.length : 0;
       const newTodo = {
         id: curLength + 1,
         title: action.title,
-        description: action.description,
-        complete: false,
-        dateCreated: Date.now(),
+        content: action.content,
+        createdOn: action.createdOn,
+        complete: action.complete,
+        completedOn: action.completedOn,
       };
       return [newTodo, ...state];
     case "TOGGLE_TODO":
@@ -29,8 +32,8 @@ function todosReducer(state, action) {
         if (action.id === todo.id) {
           updatedTodos.push({
             ...todo,
-            complete: !todo.complete,
-            dateCompleted: todo.complete ? null : Date.now(),
+            complete: action.complete,
+            completedOn: action.complete ? new Date() : null,
           });
         } else {
           updatedTodos.push(todo);

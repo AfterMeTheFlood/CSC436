@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useResource } from "react-request-hook";
 import { StateContext } from "../Contexts";
 
 export default function Register() {
@@ -6,6 +7,19 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+
+  const [user, register] = useResource((username, password) => ({
+    url: "/users",
+    method: "post",
+    data: { username, password },
+  }));
+
+  useEffect(() => {
+    if (user && user.data) {
+      dispatch({ type: "REGISTER", username: user.data.username });
+    }
+  }, [user]);
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!username.trim()) {
@@ -16,7 +30,7 @@ export default function Register() {
       alert("Password can not be empty!");
       return;
     }
-    dispatch({ type: "REGISTER", username, password, passwordRepeat });
+    register(username, password);
     setUsername("");
     setPassword("");
     setPasswordRepeat("");

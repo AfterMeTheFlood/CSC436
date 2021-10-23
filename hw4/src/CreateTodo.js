@@ -1,33 +1,55 @@
 import React, { useState, useContext } from "react";
+import { useResource } from "react-request-hook";
 import { StateContext } from "./Contexts";
 
 export default function CreateTodo() {
-  const { dispatch } = useContext(StateContext);
+  const { state, dispatch } = useContext(StateContext);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+
+  const [todo, createTodo] = useResource(
+    ({ title, content, author, createdOn, complete, completedOn }) => ({
+      url: "/todos",
+      method: "post",
+      data: { title, content, author, createdOn, complete, completedOn },
+    })
+  );
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) {
       alert("Title can not be empty!");
       return;
     }
-    console.log("title:", title);
-    console.log("description:", description);
+
+    const createdOn = new Date();
+    createTodo({
+      title,
+      content,
+      author: state.user,
+      createdOn,
+      complete: false,
+      completedOn: null,
+    });
     dispatch({
       type: "CREATE_TODO",
       title,
-      description,
+      content,
+      author: state.user,
+      createdOn,
+      complete: false,
+      completedOn: null,
     });
     setTitle("");
-    setDescription("");
+    setContent("");
   }
 
   function handleChangeTitle(e) {
     setTitle(e.target.value);
   }
 
-  function handleChangeDescription(e) {
-    setDescription(e.target.value);
+  function handleChangeContent(e) {
+    setContent(e.target.value);
   }
 
   return (
@@ -43,13 +65,13 @@ export default function CreateTodo() {
         />
       </div>
       <div>
-        <label htmlFor="create-description">Description:</label>
+        <label htmlFor="create-content">Content:</label>
         <input
           type="text"
-          name="create-description"
-          id="create-description"
-          value={description}
-          onChange={handleChangeDescription}
+          name="create-content"
+          id="create-content"
+          value={content}
+          onChange={handleChangeContent}
         />
       </div>
       <input type="submit" value="Create" />
