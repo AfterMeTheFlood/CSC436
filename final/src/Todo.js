@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { useResource } from "react-request-hook";
+import { Card, Button, Form } from "react-bootstrap";
 import { StateContext } from "./Contexts";
 
 export default function Todo({
@@ -44,31 +45,47 @@ export default function Todo({
   }
 
   return (
-    <div>
-      <h3>{title}</h3>
-      <div>
-        <input
+    <Card>
+      <Card.Body>
+        <Form.Check
           type="checkbox"
+          inline
           checked={complete || false}
           onChange={handleUpdate}
+          label={<Card.Title>{title}</Card.Title>}
         />
-        <label htmlFor="complete">complete</label>
-      </div>
-      <i>
-        Content: <b>{content}</b>
-      </i>
-      <div>
-        Date Created:
-        {createdOn ? new Date(createdOn).toLocaleDateString("en-us") : ""}
-      </div>
-      <div>
-        Date Completed:
-        {completedOn ? new Date(completedOn).toLocaleDateString("en-us") : ""}
-      </div>
-      <button type="button" onClick={handleDelete}>
-        Delete
-      </button>
-      <br />
-    </div>
+        <Card.Subtitle>
+          <i>
+            Written by <b>{author}</b>
+          </i>
+        </Card.Subtitle>
+        <Card.Text>
+          Content: <b>{content}</b>
+        </Card.Text>
+        {createdOn && (
+          <>
+            <i>
+              Created on:{" "}
+              {createdOn ? new Date(createdOn).toLocaleDateString("en-us") : ""}
+            </i>
+            <br />
+          </>
+        )}
+        {complete && (
+          <>
+            <i>
+              Completed on:{" "}
+              {completedOn
+                ? new Date(completedOn).toLocaleDateString("en-us")
+                : ""}
+            </i>
+            <br />
+          </>
+        )}
+        <Button variant="link" onClick={handleDelete}>
+          Delete Post
+        </Button>
+      </Card.Body>
+    </Card>
   );
 }
