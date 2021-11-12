@@ -10,6 +10,15 @@ function userReducer(state, action) {
   }
 }
 
+function userListReducer(state, action) {
+  switch (action.type) {
+    case "FETCH_USERS":
+      return action.users;
+    default:
+      return state;
+  }
+}
+
 function todosReducer(state, action) {
   const todos = state;
   switch (action.type) {
@@ -50,6 +59,7 @@ function todosReducer(state, action) {
 export default function appReducer(state, action) {
   return {
     user: userReducer(state.user, action),
+    users: userListReducer(state.users, action),
     todos: todosReducer(state.todos, action),
   };
 }

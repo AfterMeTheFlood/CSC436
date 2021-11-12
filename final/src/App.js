@@ -1,56 +1,47 @@
-import React, { useReducer, useEffect } from "react";
-import { useResource } from "react-request-hook";
+import React, { useReducer } from "react";
 import { Container } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { mount, route } from "navi";
+import { Router, View } from "react-navi";
 import UserBar from "./user/UserBar";
+import UserList from "./user/UserList";
+import UserProfile from "./user/UserProfile";
+import Home from "./Home";
 import CreateTodo from "./CreateTodo";
-import TodoList from "./TodoList";
 import appReducer from "./reducers";
 import { StateContext } from "./Contexts";
 
 function App() {
-  const [todos, getTodos] = useResource(() => ({
-    url: "/todos",
-    method: "get",
-  }));
-
   const [state, dispatch] = useReducer(appReducer, {
     user: "",
+    users: [],
     todos: [],
   });
 
-  useEffect(getTodos, []);
-
-  useEffect(() => {
-    if (todos && todos.data) {
-      dispatch({ type: "FETCH_TODOS", todos: todos.data });
-    }
-  }, [todos]);
-
   const { user } = state;
 
-  useEffect(() => {
-    if (user) {
-      document.title = `${user}'s Todo`;
-    } else {
-      document.title = "Todo";
-    }
-  }, [user]);
+  const routes = mount({
+    "/": route({ view: <Home /> }),
+    "/users": route({ view: <UserList /> }),
+    "/users/:userId": route((req) => {
+      console.log("req: ", req);
+      return { view: <UserProfile userId={req.params.userId} /> };
+    }),
+  });
 
   return (
     <div>
       <StateContext.Provider value={{ state: state, dispatch: dispatch }}>
-        <Container>
-          <React.Suspense fallback={"Loading..."}>
-            <UserBar />
-          </React.Suspense>
-          <br />
-          <br />
-          <hr />
-          <br />
-          {user && <CreateTodo />}
-          <TodoList />
-        </Container>
+        <Router routes={routes}>
+          <Container>
+            <React.Suspense fallback={"Loading..."}>
+              <UserBar />
+            </React.Suspense>
+            <hr />
+            {user && <CreateTodo />}
+            {/* <TodoList /> */}
+            <View />
+          </Container>
+        </Router>
       </StateContext.Provider>
     </div>
   );
