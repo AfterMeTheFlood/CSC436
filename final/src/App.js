@@ -1,5 +1,7 @@
 import React, { useReducer, useEffect } from "react";
 import { useResource } from "react-request-hook";
+import { Container } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import UserBar from "./user/UserBar";
 import CreateTodo from "./CreateTodo";
 import TodoList from "./TodoList";
@@ -18,7 +20,7 @@ function App() {
   });
 
   useEffect(getTodos, []);
-  
+
   useEffect(() => {
     if (todos && todos.data) {
       dispatch({ type: "FETCH_TODOS", todos: todos.data });
@@ -38,13 +40,17 @@ function App() {
   return (
     <div>
       <StateContext.Provider value={{ state: state, dispatch: dispatch }}>
-        <UserBar />
-        <br />
-        <br />
-        <hr />
-        <br />
-        {user && <CreateTodo />}
-        <TodoList />
+        <Container>
+          <React.Suspense fallback={"Loading..."}>
+            <UserBar />
+          </React.Suspense>
+          <br />
+          <br />
+          <hr />
+          <br />
+          {user && <CreateTodo />}
+          <TodoList />
+        </Container>
       </StateContext.Provider>
     </div>
   );

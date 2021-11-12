@@ -1,12 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Form, Modal, Button } from "react-bootstrap";
 import { useResource } from "react-request-hook";
 import { StateContext } from "../Contexts";
 
-export default function Register() {
+export default function Register({ show, handleClose }) {
   const { dispatch } = useContext(StateContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    passwordRepeat: "",
+  });
 
   const [user, register] = useResource((username, password) => ({
     url: "/users",
@@ -22,59 +25,81 @@ export default function Register() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!username.trim()) {
+    if (!formData.username.trim()) {
       alert("Username can not be empty!");
       return;
     }
-    if (!password.trim() || !passwordRepeat.trim()) {
+    if (!formData.password.trim() || !formData.passwordRepeat.trim()) {
       alert("Password can not be empty!");
       return;
     }
-    register(username, password);
-    setUsername("");
-    setPassword("");
-    setPasswordRepeat("");
+    register(formData.username, formData.password);
+    handleClose();
   }
 
   function handleChangeUsername(e) {
-    setUsername(e.target.value);
+    setFormData({ ...formData, username: e.target.value });
   }
 
   function handleChangePassword(e) {
-    setPassword(e.target.value);
+    setFormData({ ...formData, password: e.target.value });
   }
 
   function handleChangePasswordRepeat(e) {
-    setPasswordRepeat(e.target.value);
+    setFormData({ ...formData, passwordRepeat: e.target.value });
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="register-username">Username:</label>
-      <input
-        type="text"
-        name="register-username"
-        id="register-username"
-        onChange={handleChangeUsername}
-      />
-
-      <label htmlFor="register-password">Password:</label>
-      <input
-        type="password"
-        name="register-password"
-        id="register-password"
-        onChange={handleChangePassword}
-      />
-
-      <label htmlFor="register-password-repeat">Repeat password:</label>
-      <input
-        type="password"
-        name="register-password-repeat"
-        id="register-password-repeat"
-        onChange={handleChangePasswordRepeat}
-      />
-
-      <input type="submit" value="Register" />
-    </form>
+    <Modal show={show} onHide={handleClose}>
+      <Form onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Register</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Label htmlFor="register-username">Username:</Form.Label>
+          <Form.Control
+            type="text"
+            value={formData.username}
+            onChange={handleChangeUsername}
+            name="register-username"
+            id="register-username"
+          />
+          <Form.Label htmlFor="register-password">Password:</Form.Label>
+          <Form.Control
+            type="password"
+            name="register-password"
+            id="register-password"
+            value={formData.password}
+            onChange={handleChangePassword}
+          />
+          <Form.Label htmlFor="register-password-repeat">
+            Repeat password:
+          </Form.Label>
+          <Form.Control
+            type="password"
+            name="register-password-repeat"
+            id="register-password-repeat"
+            value={formData.passwordRepeat}
+            onChange={handleChangePasswordRepeat}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={
+              formData.username.length === 0 ||
+              formData.password.length === 0 ||
+              formData.password !== formData.passwordRepeat
+            }
+          >
+            Register
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   );
 }
