@@ -46,6 +46,8 @@ router.post("/login", async function (req, res, next) {
           }
         })
         .catch((error) => {
+          console.log("privateKey: ", privateKey);
+          console.log("error:", error);
           return res.status(500).json({ error: error.message });
         });
     }
