@@ -3,7 +3,7 @@ var router = express.Router();
 const jwt = require("jsonwebtoken");
 const Todo = require("../models/Todo");
 
-const privateKey = process.env.JWT_PRIVATE_KEY;
+const privateKey = process.env.JWT_PRIVATE_KEY.replace(/\\n/gm, "\n");
 
 function authorization(req, res, next) {
   console.log("req.header: ", req.header("Authorization"));
