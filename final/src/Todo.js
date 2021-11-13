@@ -4,7 +4,7 @@ import { Card, Button, Form } from "react-bootstrap";
 import { StateContext } from "./Contexts";
 
 export default function Todo({
-  id,
+  _id,
   title,
   content,
   author,
@@ -12,48 +12,68 @@ export default function Todo({
   complete,
   completedOn,
 }) {
-  const { dispatch } = useContext(StateContext);
-
+  const { state, dispatch } = useContext(StateContext);
+  const { user } = state;
   const [todoUpdate, updateTodo] = useResource(
-    ({ id, complete, completedOn }) => ({
-      url: `/todos/${id}`,
+    ({ _id, complete, completedOn }) => ({
+      url: `/todo/${_id}`,
       method: "put",
+      headers: { Authorization: `${state.user.access_token}` },
       data: { title, content, author, createdOn, complete, completedOn },
     })
   );
 
   function handleUpdate() {
+    if (user.username !== author) {
+      return;
+    }
     const completedOn = new Date();
     updateTodo({
-      id,
+      _id,
+      title,
+      content,
+      author,
       complete: !complete,
       completedOn: complete ? null : completedOn,
     });
-    dispatch({ type: "TOGGLE_TODO", id, complete: !complete, completedOn });
+    dispatch({
+      type: "TOGGLE_TODO",
+      _id: _id,
+      complete: !complete,
+      completedOn,
+    });
   }
 
-  const [todoDelete, deleteTodo] = useResource(({ id }) => ({
-    url: `/todos/${id}`,
+  const [todoDelete, deleteTodo] = useResource(({ _id }) => ({
+    url: `/todo/${_id}`,
     method: "delete",
+    headers: { Authorization: `${state.user.access_token}` },
   }));
 
   function handleDelete() {
+    if (user.username !== author) {
+      return;
+    }
+
     deleteTodo({
-      id,
+      _id: _id,
     });
-    dispatch({ type: "DELETE_TODO", id });
+    dispatch({ type: "DELETE_TODO", _id: _id });
   }
 
   return (
     <Card>
       <Card.Body>
-        <Form.Check
-          type="checkbox"
-          inline
-          checked={complete || false}
-          onChange={handleUpdate}
-          label={<Card.Title>{title}</Card.Title>}
-        />
+        {user.username && (
+          <Form.Check
+            type="checkbox"
+            inline
+            checked={complete || false}
+            onChange={handleUpdate}
+            label={<Card.Title>{title}</Card.Title>}
+          />
+        )}
+
         <Card.Subtitle>
           <i>
             Written by <b>{author}</b>
@@ -82,9 +102,11 @@ export default function Todo({
             <br />
           </>
         )}
-        <Button variant="link" onClick={handleDelete}>
-          Delete Post
-        </Button>
+        {user.username && (
+          <Button variant="link" onClick={handleDelete}>
+            Delete Post
+          </Button>
+        )}
       </Card.Body>
     </Card>
   );

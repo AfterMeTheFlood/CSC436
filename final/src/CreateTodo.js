@@ -9,8 +9,9 @@ export default function CreateTodo() {
 
   const [todo, createTodo] = useResource(
     ({ title, content, author, createdOn, complete, completedOn }) => ({
-      url: "/todos",
+      url: "/todo",
       method: "post",
+      headers: { Authorization: `${state.user.access_token}` },
       data: { title, content, author, createdOn, complete, completedOn },
     })
   );
@@ -26,7 +27,7 @@ export default function CreateTodo() {
     createTodo({
       title,
       content,
-      author: state.user,
+      author: state.user.username,
       createdOn,
       complete: false,
       completedOn: null,
@@ -35,7 +36,7 @@ export default function CreateTodo() {
       type: "CREATE_TODO",
       title,
       content,
-      author: state.user,
+      author: state.user.username,
       createdOn,
       complete: false,
       completedOn: null,

@@ -6,7 +6,7 @@ import Todo from "../Todo";
 export default function UserProfile({ userId }) {
   const { state } = useContext(StateContext);
   const { users } = state;
-  const user = users.find((user) => user.id && user.id.toString() === userId);
+  const user = users.find((user) => user._id && user._id.toString() === userId);
   const todos = user
     ? state.todos.filter((todo) => todo.author === user.username)
     : [];

@@ -1,10 +1,20 @@
 function userReducer(state, action) {
   switch (action.type) {
     case "LOGIN":
+      return {
+        username: action.username,
+        access_token: action.access_token,
+      };
     case "REGISTER":
-      return action.username;
+      return {
+        username: action.username,
+        access_token: action.access_token,
+      };
     case "LOGOUT":
-      return "";
+      return {
+        username: undefined,
+        access_token: undefined,
+      };
     default:
       return state;
   }
@@ -27,18 +37,18 @@ function todosReducer(state, action) {
     case "CREATE_TODO":
       const curLength = todos.length ? todos.length : 0;
       const newTodo = {
-        id: curLength + 1,
+        _id: curLength + 1,
         title: action.title,
         content: action.content,
         createdOn: action.createdOn,
         complete: action.complete,
         completedOn: action.completedOn,
       };
-      return [newTodo, ...state];
+      return [newTodo, ...todos];
     case "TOGGLE_TODO":
       let updatedTodos = [];
       todos.forEach((todo) => {
-        if (action.id === todo.id) {
+        if (action._id === todo._id) {
           updatedTodos.push({
             ...todo,
             complete: action.complete,
@@ -50,7 +60,7 @@ function todosReducer(state, action) {
       });
       return updatedTodos;
     case "DELETE_TODO":
-      return todos.filter((todo) => todo.id !== action.id);
+      return todos.filter((todo) => todo._id !== action._id);
     default:
       return state;
   }

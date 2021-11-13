@@ -6,13 +6,12 @@ import UserBar from "./user/UserBar";
 import UserList from "./user/UserList";
 import UserProfile from "./user/UserProfile";
 import Home from "./Home";
-import CreateTodo from "./CreateTodo";
 import appReducer from "./reducers";
 import { StateContext } from "./Contexts";
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, {
-    user: "",
+    user: {},
     users: [],
     todos: [],
   });
@@ -37,8 +36,6 @@ function App() {
               <UserBar />
             </React.Suspense>
             <hr />
-            {user && <CreateTodo />}
-            {/* <TodoList /> */}
             <View />
           </Container>
         </Router>

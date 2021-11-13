@@ -12,9 +12,9 @@ export default function Register({ show, handleClose }) {
   });
 
   const [user, register] = useResource((username, password) => ({
-    url: "/users",
+    url: "auth/register",
     method: "post",
-    data: { username, password },
+    data: { username, password, passwordConfirmation: password },
   }));
 
   useEffect(() => {
