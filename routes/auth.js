@@ -8,7 +8,7 @@ const User = require("../models/User");
 
 const saltRounds = 10;
 
-const privateKey = process.env.JWT_PRIVATE_KEY;
+const privateKey = process.env.JWT_PRIVATE_KEY.replace(/\\n/gm, "\n");
 
 router.use(function (req, res, next) {
   bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -37,7 +37,8 @@ router.post("/login", async function (req, res, next) {
         .compare(req.body.password, user.password)
         .then((result) => {
           if (result === true) {
-            const token = jwt.sign({ id: user._id }, [privateKey].join("\n"), {
+            console.log("privateKey: ", privateKey);
+            const token = jwt.sign({ id: user._id }, privateKey, {
               algorithm: "RS256",
             });
             return res.status(200).json({ access_token: token });
@@ -46,8 +47,6 @@ router.post("/login", async function (req, res, next) {
           }
         })
         .catch((error) => {
-          console.log("privateKey: ", privateKey);
-          console.log("[privateKey].join(): ", [privateKey].join("\n"));
           console.log("error:", error);
           return res.status(500).json({ error: error.message });
         });
